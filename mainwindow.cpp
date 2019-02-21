@@ -59,8 +59,7 @@ void MainWindow::on_send_msg(st_m_cpack & _msg)
 {
 	//ui->tbview_msg->setUpdatesEnabled(false);
 	m_model_msg.appendRow(new QStandardItem("aa"));
-	m_model_msg.appendColumn()
-		//ui->tbview_msg->setUpdatesEnabled(true);
+	//ui->tbview_msg->setUpdatesEnabled(true);
 }
 
 void MainWindow::on_btn_start_clicked()

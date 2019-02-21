@@ -46,7 +46,7 @@
     <ClCompile Include="CRmq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\ClibRmq.cpp">
+    <ClCompile Include="..\mylib\include\ClibRmq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,7 +75,7 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\ClibRmq.h">
+    <ClInclude Include="..\mylib\include\ClibRmq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
