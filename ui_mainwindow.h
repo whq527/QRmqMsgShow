@@ -35,12 +35,13 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout_2;
-    QTableView *tbview_msg;
+    QHBoxLayout *horizontalLayout_2;
+    QTableView *tableView_msg;
+    QColumnView *colview_msg;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
-    QDockWidget *dockWidget1;
+    QDockWidget *dockWidget_1;
     QWidget *dockWidgetContents_2;
     QVBoxLayout *verticalLayout_3;
     QGroupBox *groupBox_2;
@@ -61,14 +62,6 @@ public:
     QLabel *label_3;
     QLineEdit *edt_host;
     QSpacerItem *horizontalSpacer;
-    QDockWidget *dockWidget;
-    QWidget *dockWidgetContents_3;
-    QVBoxLayout *verticalLayout_5;
-    QColumnView *colview_left;
-    QDockWidget *dockWidget2;
-    QWidget *dockWidgetContents;
-    QVBoxLayout *verticalLayout;
-    QColumnView *colview_right;
     QDockWidget *dockWidget_2;
     QWidget *dockWidgetContents_6;
     QHBoxLayout *horizontalLayout;
@@ -84,14 +77,20 @@ public:
         MainWindow->setDockNestingEnabled(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        verticalLayout_2 = new QVBoxLayout(centralWidget);
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        tbview_msg = new QTableView(centralWidget);
-        tbview_msg->setObjectName(QString::fromUtf8("tbview_msg"));
+        horizontalLayout_2 = new QHBoxLayout(centralWidget);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        tableView_msg = new QTableView(centralWidget);
+        tableView_msg->setObjectName(QString::fromUtf8("tableView_msg"));
+        tableView_msg->horizontalHeader()->setVisible(false);
 
-        verticalLayout_2->addWidget(tbview_msg);
+        horizontalLayout_2->addWidget(tableView_msg);
+
+        colview_msg = new QColumnView(centralWidget);
+        colview_msg->setObjectName(QString::fromUtf8("colview_msg"));
+
+        horizontalLayout_2->addWidget(colview_msg);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
@@ -104,11 +103,11 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         MainWindow->setStatusBar(statusBar);
-        dockWidget1 = new QDockWidget(MainWindow);
-        dockWidget1->setObjectName(QString::fromUtf8("dockWidget1"));
-        dockWidget1->setMinimumSize(QSize(741, 100));
-        dockWidget1->setMaximumSize(QSize(524287, 100));
-        dockWidget1->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
+        dockWidget_1 = new QDockWidget(MainWindow);
+        dockWidget_1->setObjectName(QString::fromUtf8("dockWidget_1"));
+        dockWidget_1->setMinimumSize(QSize(741, 100));
+        dockWidget_1->setMaximumSize(QSize(524287, 100));
+        dockWidget_1->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
         dockWidgetContents_2 = new QWidget();
         dockWidgetContents_2->setObjectName(QString::fromUtf8("dockWidgetContents_2"));
         verticalLayout_3 = new QVBoxLayout(dockWidgetContents_2);
@@ -211,40 +210,8 @@ public:
 
         verticalLayout_3->addWidget(groupBox_2);
 
-        dockWidget1->setWidget(dockWidgetContents_2);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget1);
-        dockWidget = new QDockWidget(MainWindow);
-        dockWidget->setObjectName(QString::fromUtf8("dockWidget"));
-        dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
-        dockWidgetContents_3 = new QWidget();
-        dockWidgetContents_3->setObjectName(QString::fromUtf8("dockWidgetContents_3"));
-        verticalLayout_5 = new QVBoxLayout(dockWidgetContents_3);
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-        colview_left = new QColumnView(dockWidgetContents_3);
-        colview_left->setObjectName(QString::fromUtf8("colview_left"));
-
-        verticalLayout_5->addWidget(colview_left);
-
-        dockWidget->setWidget(dockWidgetContents_3);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockWidget);
-        dockWidget2 = new QDockWidget(MainWindow);
-        dockWidget2->setObjectName(QString::fromUtf8("dockWidget2"));
-        dockWidget2->setAllowedAreas(Qt::AllDockWidgetAreas);
-        dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-        verticalLayout = new QVBoxLayout(dockWidgetContents);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        colview_right = new QColumnView(dockWidgetContents);
-        colview_right->setObjectName(QString::fromUtf8("colview_right"));
-
-        verticalLayout->addWidget(colview_right);
-
-        dockWidget2->setWidget(dockWidgetContents);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget2);
+        dockWidget_1->setWidget(dockWidgetContents_2);
+        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget_1);
         dockWidget_2 = new QDockWidget(MainWindow);
         dockWidget_2->setObjectName(QString::fromUtf8("dockWidget_2"));
         dockWidgetContents_6 = new QWidget();

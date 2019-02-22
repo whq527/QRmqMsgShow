@@ -4,6 +4,7 @@
 #include <QTextEdit>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDateTime>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "windows.h"
@@ -25,10 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_rmq->moveToThread(m_threads);
 	m_threads->start();
 
-	ui->tbview_msg->setModel(&m_model_msg);
-	ui->tbview_msg->horizontalHeader()->hide();
-	//ui->tbview_msg->verticalHeader()->hide();
-
+	ui->tableView_msg->setModel(&m_model_msg);
+	//ui->tableView_msg->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	//ui->listView_msg->setModel(&m_model_msg);
 	//this->startTimer(5000);
 
 	ui->box_key->setCurrentText("two");
@@ -57,9 +57,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_send_msg(st_m_cpack & _msg)
 {
-	//ui->tbview_msg->setUpdatesEnabled(false);
-	m_model_msg.appendRow(new QStandardItem("aa"));
-	//ui->tbview_msg->setUpdatesEnabled(true);
+	QStringList strlist;
+
+	if (m_model_msg.rowCount() > 50)
+	{
+		m_model_msg.removeRow(0);
+	}
+
+	strlist << QString::fromStdString(_msg.header.exchange)
+		<< QString::fromStdString(_msg.header.routekey)
+		<< QDateTime::fromTime_t(_msg.header.timestamp).toString("yyyy-MM-dd hh:mm:ss")
+		<< QString::number(_msg.pack.head.recCount);
+	m_model_msg.appendRow(new QStandardItem(strlist.join("-")));
+	//ui->tableView_msg->resizeColumnsToContents();
 }
 
 void MainWindow::on_btn_start_clicked()

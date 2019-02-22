@@ -5,8 +5,8 @@
 #include <QTableView>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QWaitCondition >
 #include <QList>
-#include <QSemaphore>
 #include <string>
 #include <deque>
 #include "ClibRmq.h"
@@ -54,6 +54,6 @@ private:
 	bool m_terminated = false;
 
 	QMutex m_mtx;
-	//QSemaphore m_sem;
+	QWaitCondition m_wait;
 	QList<st_m_cpack> m_recvdata;
 };

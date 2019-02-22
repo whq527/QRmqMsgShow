@@ -93,6 +93,7 @@ void CRmq::SetData(st_rmq_msg * _msg)
 			memcpy_s(&one.pack, sizeof(ST_PACK), m_recvbuf, sizeof(ST_PACK));
 			QMutexLocker locker(&m_mtx);
 			m_recvdata.push_back(one);
+			m_wait.notify_all();
 		}
 	}
 }
@@ -100,6 +101,8 @@ void CRmq::SetData(st_rmq_msg * _msg)
 void CRmq::th_stop()
 {
 	m_stop = true;
+	QMutexLocker locker(&m_mtx);
+	m_wait.notify_all();
 	if (m_rmq == nullptr)
 		return;
 	m_rmq->Terminate();
@@ -117,15 +120,14 @@ void CRmq::th_run()
 			{
 				emit send_msg(m_recvdata.front());
 				m_recvdata.pop_front();
-				//found = true;
+				found = true;
 			}
 		}
-		if (found)
+
+		if (!found)
 		{
-		}
-		else
-		{
-			Sleep(1);
+			QMutexLocker locker(&m_mtx);
+			m_wait.wait(&m_mtx);
 		}
 	}
 }
