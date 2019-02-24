@@ -304,7 +304,7 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>qtmaind.lib;shell32.lib;Qt5Widgetsd.lib;Qt5Guid.lib;Qt5Cored.lib;libMsgTcp.lib;librabbitmq.4d.lib;ws2_32.lib;zlibstatd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;shell32.lib;Qt5Widgetsd.lib;Qt5Guid.lib;Qt5Cored.lib;wlib64d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(M_USER_LIB)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -342,8 +342,9 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\mylib\include\ClibRmq.cpp" />
     <ClCompile Include="CRmq.cpp" />
+    <ClCompile Include="CWListModel.cpp" />
+    <ClCompile Include="FunCpack.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
   </ItemGroup>
@@ -379,7 +380,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </CustomBuild>
     <QtMoc Include="CRmq.h" />
-    <ClInclude Include="..\mylib\include\ClibRmq.h" />
+    <QtMoc Include="CWListModel.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;.\debug;\include;$(QTDIR)\include;$(QTDIR)\mkspecs\win32-msvc;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;.\..\include;.\..\librabbitmq</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;.\debug;\include;$(QTDIR)\include;$(QTDIR)\mkspecs\winrt-x64-msvc2017;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(M_USER_LIB)include;$(M_USER_LIB)librabbitmq;$(M_USER_LIB)zlib</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;.\..\..\QT\5.11.1\MSVC2015\include;.\..\..\QT\5.11.1\MSVC2015\include\QtWidgets;.\..\..\QT\5.11.1\MSVC2015\include\QtGui;.\..\..\QT\5.11.1\MSVC2015\include\QtANGLE;.\..\..\QT\5.11.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\QT\5.11.1\MSVC2015\mkspecs\win32-msvc;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;.\..\..\QT\5.11.1\MSVC2015\include;.\..\..\QT\5.11.1\MSVC2015\include\QtWidgets;.\..\..\QT\5.11.1\MSVC2015\include\QtGui;.\..\..\QT\5.11.1\MSVC2015\include\QtANGLE;.\..\..\QT\5.11.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\QT\5.11.1\MSVC2015\mkspecs\win32-msvc;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
+    <ClInclude Include="common.hpp" />
+    <ClInclude Include="FunCpack.h" />
     <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>

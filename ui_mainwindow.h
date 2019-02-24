@@ -16,15 +16,14 @@
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTableView>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -36,7 +35,7 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_2;
-    QTableView *tableView_msg;
+    QListView *listView_msg;
     QColumnView *colview_msg;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -81,11 +80,11 @@ public:
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        tableView_msg = new QTableView(centralWidget);
-        tableView_msg->setObjectName(QString::fromUtf8("tableView_msg"));
-        tableView_msg->horizontalHeader()->setVisible(false);
+        listView_msg = new QListView(centralWidget);
+        listView_msg->setObjectName(QString::fromUtf8("listView_msg"));
+        listView_msg->setMaximumSize(QSize(300, 16777215));
 
-        horizontalLayout_2->addWidget(tableView_msg);
+        horizontalLayout_2->addWidget(listView_msg);
 
         colview_msg = new QColumnView(centralWidget);
         colview_msg->setObjectName(QString::fromUtf8("colview_msg"));
@@ -243,7 +242,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Rabbitmq", nullptr));
         label->setText(QApplication::translate("MainWindow", "IP", nullptr));
-        edt_ip->setText(QApplication::translate("MainWindow", "10.10.101.35", nullptr));
+        edt_ip->setText(QApplication::translate("MainWindow", "192.168.3.200", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "PORT", nullptr));
         edt_port->setText(QApplication::translate("MainWindow", "5672", nullptr));
         btn_start->setText(QApplication::translate("MainWindow", "\345\220\257\345\212\250", nullptr));

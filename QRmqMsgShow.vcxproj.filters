@@ -46,7 +46,10 @@
     <ClCompile Include="CRmq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mylib\include\ClibRmq.cpp">
+    <ClCompile Include="CWListModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FunCpack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -55,6 +58,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="CRmq.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CWListModel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -75,8 +81,11 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\mylib\include\ClibRmq.h">
+    <ClInclude Include="FunCpack.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.hpp">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

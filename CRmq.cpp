@@ -1,5 +1,6 @@
 #pragma execution_character_set("utf-8")
 #include <QDebug>
+#include <QTime>
 #include "CRmq.h"
 #include "zlib.h"
 
@@ -30,21 +31,21 @@ bool CRmq::init(QString _user, QString _psw, QString _ip, int _port, int _channe
 	if (m_rmq == nullptr)
 	{
 		m_rmq = new ClibRmq(_channel);
+		QByteArray user = _user.toLocal8Bit();
+		QByteArray psw = _psw.toLocal8Bit();
+		QByteArray ip = _ip.toLocal8Bit();
+		QByteArray queue = _queue.toLocal8Bit();
+		QByteArray consumer = _consumer.toLocal8Bit();
+		QByteArray host = _host.toLocal8Bit();
+		if (!m_rmq->Init(user.data(), psw.data(), ip.data(),
+			_port, "", "", 1, EM_WORKTYPE::CUSTOMER, true, OnRMQData, queue.data(), consumer.data(), 1, host.data()))
+		{
+			delete m_rmq;
+			m_rmq = nullptr;
+			return false;
+		}
+		m_rmq->Start();
 	}
-	QByteArray user = _user.toLocal8Bit();
-	QByteArray psw = _psw.toLocal8Bit();
-	QByteArray ip = _ip.toLocal8Bit();
-	QByteArray queue = _queue.toLocal8Bit();
-	QByteArray consumer = _consumer.toLocal8Bit();
-	QByteArray host = _host.toLocal8Bit();
-	if (!m_rmq->Init(user.data(), psw.data(), ip.data(),
-		_port, "", "", 1, EM_WORKTYPE::CUSTOMER, true, OnRMQData, queue.data(), consumer.data(), 1, host.data()))
-	{
-		delete m_rmq;
-		m_rmq = nullptr;
-		return false;
-	}
-	m_rmq->Start();
 	return true;
 }
 
@@ -66,31 +67,36 @@ void CRmq::unbindkey(QString _key, QString _exchange)
 	m_rmq->Get_UnBind(key.data(), exchange.data());
 }
 
-//void CRmq::SetTableView(QTableView * _ptbview)
-//{
-//	m_ptbview = _ptbview;
-//	m_ptbview->setModel(&m_model_msg);
-//}
-
 void CRmq::SetData(st_rmq_msg * _msg)
 {
 	st_m_cpack one;
-	one.header.exchange = _msg->exchange;
-	one.header.routekey = _msg->routekey;
-	one.header.queue = _msg->queue;
-	one.header.timestamp = _msg->timestamp;
-	one.header.src_size = _msg->src_size;
-	one.header.type = _msg->type;
-	one.header.id = _msg->id;
-	if (one.header.src_size == 0)
+	one.header.exchange = _msg->header.exchange;
+	one.header.routekey = _msg->header.routekey;
+	one.header.queue = _msg->header.queue;
+	one.header.timestamp = _msg->header.timestamp;
+	one.header.src_size = _msg->header.src_size;
+	one.header.type = _msg->header.type;
+	one.header.id = _msg->header.id;
+	one.header.struct_name = _msg->header.struct_name;
+	if (one.header.src_size == sizeof(ST_CPACK) || one.header.struct_name == "ST_CPACK")
 	{
-		char m_recvbuf[10240] = { 0 };
-		memset(m_recvbuf, 0, sizeof(m_recvbuf));
-		unsigned long datalen = sizeof(m_recvbuf);
-		uncompress((unsigned char*)m_recvbuf, &datalen, (unsigned char*)_msg->content.bytes, _msg->content.len);
-		if (datalen == sizeof(st_cpack))
+		if (!_msg->header.zlib)
 		{
-			memcpy_s(&one.pack, sizeof(ST_PACK), m_recvbuf, sizeof(ST_PACK));
+			char m_recvbuf[10240] = { 0 };
+			memset(m_recvbuf, 0, sizeof(m_recvbuf));
+			unsigned long datalen = sizeof(m_recvbuf);
+			uncompress((unsigned char*)m_recvbuf, &datalen, (unsigned char*)_msg->content.bytes, (unsigned long)_msg->content.len);
+			if (datalen == sizeof(st_cpack))
+			{
+				memcpy_s(&one.pack, sizeof(ST_PACK), m_recvbuf, sizeof(ST_PACK));
+				QMutexLocker locker(&m_mtx);
+				m_recvdata.push_back(one);
+				m_wait.notify_all();
+			}
+		}
+		else
+		{
+			memcpy_s(&one.pack, sizeof(ST_PACK), _msg->content.bytes, sizeof(ST_PACK));
 			QMutexLocker locker(&m_mtx);
 			m_recvdata.push_back(one);
 			m_wait.notify_all();

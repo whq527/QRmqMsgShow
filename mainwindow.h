@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QStandardItemModel>
+#include <QStandardItem>
 #include <QLabel>
+#include "CWListModel.h"
 #include "libMsgTcpIter.h"
 #include "CRmq.h"
 #include "ClibRmq.h"
@@ -27,6 +29,7 @@ signals:
 	void th_stop();
 
 private slots:
+	//void on_send_msg_cell(int row, int col, st_m_cpack & _msg);
 	void on_send_msg(st_m_cpack & _msg);
 	void on_btn_start_clicked();
 	void on_btn_bind_clicked();
@@ -43,8 +46,9 @@ private:
 	ClibMsg *msg = nullptr;
 	CRmq *m_rmq = nullptr;
 
-	QStandardItemModel m_model_msg;
-	int count = 0;
+	QStringList m_tmp_list;
+	CWListModel m_model_msg;
+	QStandardItemModel m_model_data;
 };
 
 #endif // MAINWINDOW_H

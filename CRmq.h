@@ -12,22 +12,9 @@
 #include "ClibRmq.h"
 #include "cpack.h"
 
-struct st_header
-{
-	//发送参数
-	std::string exchange = "";
-	std::string routekey = "";
-	std::string queue = "";
-	time_t timestamp = 0;
-	unsigned long src_size = 0;			//原始大小
-	//自定义附加属性
-	std::string type = "";
-	std::string id = "";
-};
-
 struct st_m_cpack
 {
-	st_header header;
+	st_rmq_msg_header header;
 	st_cpack pack = { 0 };
 };
 
@@ -41,9 +28,9 @@ public:
 	void th_stop();
 	void bindkey(QString _key, QString _exchange);
 	void unbindkey(QString _key, QString _exchange);
-	//void SetTableView(QTableView * _ptbview);
 	void SetData(st_rmq_msg* _msg);
 signals:
+	//void send_msg_cell(int row, int col, st_m_cpack &);
 	void send_msg(st_m_cpack &);
 public slots:
 	void th_run();
