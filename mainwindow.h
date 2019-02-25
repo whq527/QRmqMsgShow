@@ -27,10 +27,9 @@ public:
 
 signals:
 	void th_stop();
-
+	void wakeup();
 private slots:
-	//void on_send_msg_cell(int row, int col, st_m_cpack & _msg);
-	void on_send_msg(st_m_cpack & _msg);
+	void on_send_msg_cpack(st_m_cpack& _msg);
 	void on_btn_start_clicked();
 	void on_btn_bind_clicked();
 protected:

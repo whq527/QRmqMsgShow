@@ -74,10 +74,12 @@ void CRmq::SetData(st_rmq_msg * _msg)
 	one.header.routekey = _msg->header.routekey;
 	one.header.queue = _msg->header.queue;
 	one.header.timestamp = _msg->header.timestamp;
+	one.header.zlib = _msg->header.zlib;
 	one.header.src_size = _msg->header.src_size;
 	one.header.type = _msg->header.type;
 	one.header.id = _msg->header.id;
 	one.header.struct_name = _msg->header.struct_name;
+	one.update = true;
 	if (one.header.src_size == sizeof(ST_CPACK) || one.header.struct_name == "ST_CPACK")
 	{
 		if (!_msg->header.zlib)
@@ -90,7 +92,7 @@ void CRmq::SetData(st_rmq_msg * _msg)
 			{
 				memcpy_s(&one.pack, sizeof(ST_PACK), m_recvbuf, sizeof(ST_PACK));
 				QMutexLocker locker(&m_mtx);
-				m_recvdata.push_back(one);
+				m_recvdata_cpack.push_back(one);
 				m_wait.notify_all();
 			}
 		}
@@ -98,7 +100,7 @@ void CRmq::SetData(st_rmq_msg * _msg)
 		{
 			memcpy_s(&one.pack, sizeof(ST_PACK), _msg->content.bytes, sizeof(ST_PACK));
 			QMutexLocker locker(&m_mtx);
-			m_recvdata.push_back(one);
+			m_recvdata_cpack.push_back(one);
 			m_wait.notify_all();
 		}
 	}
@@ -119,14 +121,31 @@ void CRmq::th_run()
 	while (m_stop != true)
 	{
 		bool found = false;
-		st_m_cpack one;
+		st_m_cpack one_cpack;
 		{
 			QMutexLocker locker(&m_mtx);
-			if (m_recvdata.size() > 0)
+			if (m_recvdata_cpack.size() > 0)
 			{
-				emit send_msg(m_recvdata.front());
-				m_recvdata.pop_front();
+				one_cpack.header = m_recvdata_cpack.front().header;
+				one_cpack.update = m_recvdata_cpack.front().update;
+				memcpy_s(&one_cpack.pack, sizeof(ST_CPACK), &m_recvdata_cpack.front().pack, sizeof(ST_CPACK));
+				m_recvdata_cpack.pop_front();
 				found = true;
+			}
+		}
+
+		if (found)
+		{
+			QString key = QString("%1_%2").arg(QString::fromStdString(one_cpack.header.exchange)).arg(QString::fromStdString(one_cpack.header.routekey));
+			m_recvdata_cpack_map[key] = one_cpack;
+		}
+
+		for (auto var = m_recvdata_cpack_map.begin(); var != m_recvdata_cpack_map.end(); var++)
+		{
+			if (var->update)
+			{
+				emit send_msg_cpack(*var);
+				var->update = false;
 			}
 		}
 
@@ -136,4 +155,10 @@ void CRmq::th_run()
 			m_wait.wait(&m_mtx);
 		}
 	}
+}
+
+void CRmq::wakeup()
+{
+	QMutexLocker locker(&m_mtx);
+	m_wait.notify_all();
 }

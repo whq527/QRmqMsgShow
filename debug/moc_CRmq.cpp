@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CRmq_t {
     QByteArrayData data[5];
-    char stringdata0[34];
+    char stringdata0[40];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,13 +32,14 @@ struct qt_meta_stringdata_CRmq_t {
 static const qt_meta_stringdata_CRmq_t qt_meta_stringdata_CRmq = {
     {
 QT_MOC_LITERAL(0, 0, 4), // "CRmq"
-QT_MOC_LITERAL(1, 5, 8), // "send_msg"
-QT_MOC_LITERAL(2, 14, 0), // ""
-QT_MOC_LITERAL(3, 15, 11), // "st_m_cpack&"
-QT_MOC_LITERAL(4, 27, 6) // "th_run"
+QT_MOC_LITERAL(1, 5, 14), // "send_msg_cpack"
+QT_MOC_LITERAL(2, 20, 0), // ""
+QT_MOC_LITERAL(3, 21, 11), // "st_m_cpack&"
+QT_MOC_LITERAL(4, 33, 6) // "th_run"
 
     },
-    "CRmq\0send_msg\0\0st_m_cpack&\0th_run"
+    "CRmq\0send_msg_cpack\0\0st_m_cpack&\0"
+    "th_run"
 };
 #undef QT_MOC_LITERAL
 
@@ -76,7 +77,7 @@ void CRmq::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         auto *_t = static_cast<CRmq *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->send_msg((*reinterpret_cast< st_m_cpack(*)>(_a[1]))); break;
+        case 0: _t->send_msg_cpack((*reinterpret_cast< st_m_cpack(*)>(_a[1]))); break;
         case 1: _t->th_run(); break;
         default: ;
         }
@@ -84,7 +85,7 @@ void CRmq::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         int *result = reinterpret_cast<int *>(_a[0]);
         {
             using _t = void (CRmq::*)(st_m_cpack & );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CRmq::send_msg)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CRmq::send_msg_cpack)) {
                 *result = 0;
                 return;
             }
@@ -133,7 +134,7 @@ int CRmq::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void CRmq::send_msg(st_m_cpack & _t1)
+void CRmq::send_msg_cpack(st_m_cpack & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

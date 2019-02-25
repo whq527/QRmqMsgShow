@@ -9,6 +9,8 @@ int main(int argc, char *argv[])
 {
 	qRegisterMetaType<st_rmq_msg>("st_rmq_msg");
 	qRegisterMetaType<st_rmq_msg>("st_rmq_msg&");
+	qRegisterMetaType<st_rmq_msg_header>("st_rmq_msg_header");
+	qRegisterMetaType<st_rmq_msg_header>("st_rmq_msg_header&");
 	qRegisterMetaType<st_m_cpack>("st_m_cpack");
 	qRegisterMetaType<st_m_cpack>("st_m_cpack&");
 	qRegisterMetaType<st_cpack>("st_cpack");

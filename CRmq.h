@@ -16,6 +16,7 @@ struct st_m_cpack
 {
 	st_rmq_msg_header header;
 	st_cpack pack = { 0 };
+	bool update = false;
 };
 
 class CRmq :public QObject
@@ -29,9 +30,10 @@ public:
 	void bindkey(QString _key, QString _exchange);
 	void unbindkey(QString _key, QString _exchange);
 	void SetData(st_rmq_msg* _msg);
+	void wakeup();
 signals:
 	//void send_msg_cell(int row, int col, st_m_cpack &);
-	void send_msg(st_m_cpack &);
+	void send_msg_cpack(st_m_cpack&);
 public slots:
 	void th_run();
 
@@ -42,5 +44,6 @@ private:
 
 	QMutex m_mtx;
 	QWaitCondition m_wait;
-	QList<st_m_cpack> m_recvdata;
+	QList<st_m_cpack> m_recvdata_cpack;
+	QMap<QString, st_m_cpack> m_recvdata_cpack_map;
 };

@@ -49,9 +49,6 @@
     <ClCompile Include="CWListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FunCpack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -81,11 +78,11 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FunCpack.h">
+    <ClInclude Include="FunCpack.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.hpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
