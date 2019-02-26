@@ -140,21 +140,26 @@ void CRmq::th_run()
 			m_recvdata_cpack_map[key] = one_cpack;
 		}
 
-		for (auto var = m_recvdata_cpack_map.begin(); var != m_recvdata_cpack_map.end(); var++)
+		if (m_ready)
 		{
-			if (var->update)
+			for (auto var = m_recvdata_cpack_map.begin(); var != m_recvdata_cpack_map.end(); var++)
 			{
-				emit send_msg_cpack(*var);
-				var->update = false;
+				if (var->update)
+				{
+					emit send_msg_cpack(*var);
+					var->update = false;
+				}
 			}
+			m_ready = false;
+			emit send_fin();
 		}
-
 		if (!found)
 		{
 			QMutexLocker locker(&m_mtx);
 			m_wait.wait(&m_mtx);
 		}
 	}
+	
 }
 
 void CRmq::wakeup()

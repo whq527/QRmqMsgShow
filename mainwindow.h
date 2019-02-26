@@ -7,7 +7,6 @@
 #include <QStandardItem>
 #include <QLabel>
 #include "CWListModel.h"
-#include "libMsgTcpIter.h"
 #include "CRmq.h"
 #include "ClibRmq.h"
 #include "cpack.h"
@@ -29,6 +28,7 @@ signals:
 	void th_stop();
 	void wakeup();
 private slots:
+	void on_send_fin();
 	void on_send_msg_cpack(st_m_cpack& _msg);
 	void on_btn_start_clicked();
 	void on_btn_bind_clicked();

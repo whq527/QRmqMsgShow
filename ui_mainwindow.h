@@ -51,7 +51,7 @@ public:
     QLineEdit *edt_port;
     QPushButton *btn_start;
     QLabel *label_4;
-    QLineEdit *edt_exchange;
+    QLineEdit *edt_bindkey;
     QComboBox *box_key;
     QPushButton *btn_bind;
     QLabel *label_5;
@@ -71,7 +71,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1054, 612);
+        MainWindow->resize(1321, 612);
         MainWindow->setDocumentMode(false);
         MainWindow->setDockNestingEnabled(true);
         centralWidget = new QWidget(MainWindow);
@@ -94,7 +94,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1054, 23));
+        menuBar->setGeometry(QRect(0, 0, 1321, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -104,7 +104,7 @@ public:
         MainWindow->setStatusBar(statusBar);
         dockWidget_1 = new QDockWidget(MainWindow);
         dockWidget_1->setObjectName(QString::fromUtf8("dockWidget_1"));
-        dockWidget_1->setMinimumSize(QSize(741, 100));
+        dockWidget_1->setMinimumSize(QSize(1033, 100));
         dockWidget_1->setMaximumSize(QSize(524287, 100));
         dockWidget_1->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
         dockWidgetContents_2 = new QWidget();
@@ -151,14 +151,21 @@ public:
 
         horizontalLayout_4->addWidget(label_4);
 
-        edt_exchange = new QLineEdit(groupBox_2);
-        edt_exchange->setObjectName(QString::fromUtf8("edt_exchange"));
-        edt_exchange->setMaximumSize(QSize(128, 16777215));
+        edt_bindkey = new QLineEdit(groupBox_2);
+        edt_bindkey->setObjectName(QString::fromUtf8("edt_bindkey"));
+        edt_bindkey->setMinimumSize(QSize(200, 0));
+        edt_bindkey->setMaximumSize(QSize(16777215, 16777215));
 
-        horizontalLayout_4->addWidget(edt_exchange);
+        horizontalLayout_4->addWidget(edt_bindkey);
 
         box_key = new QComboBox(groupBox_2);
         box_key->setObjectName(QString::fromUtf8("box_key"));
+        QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(box_key->sizePolicy().hasHeightForWidth());
+        box_key->setSizePolicy(sizePolicy);
+        box_key->setMinimumSize(QSize(200, 0));
         box_key->setEditable(true);
         box_key->setDuplicatesEnabled(false);
 
@@ -247,7 +254,13 @@ public:
         edt_port->setText(QApplication::translate("MainWindow", "5672", nullptr));
         btn_start->setText(QApplication::translate("MainWindow", "\345\220\257\345\212\250", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Exchange+key", nullptr));
-        edt_exchange->setText(QApplication::translate("MainWindow", "test", nullptr));
+#ifndef QT_NO_TOOLTIP
+        edt_bindkey->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>exchange key</p></body></html>", nullptr));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_WHATSTHIS
+        edt_bindkey->setWhatsThis(QApplication::translate("MainWindow", "<html><head/><body><p>exchange key</p></body></html>", nullptr));
+#endif // QT_NO_WHATSTHIS
+        edt_bindkey->setText(QApplication::translate("MainWindow", "exchange key", nullptr));
         btn_bind->setText(QApplication::translate("MainWindow", "\347\273\221\345\256\232/\350\247\243\347\273\221", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "User", nullptr));
         edt_user->setText(QApplication::translate("MainWindow", "client", nullptr));

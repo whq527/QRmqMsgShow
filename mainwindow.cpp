@@ -54,12 +54,11 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-//void MainWindow::on_send_msg_cell(int row, int col, st_m_cpack & _msg)
-//{
-//	Q_UNUSED(row);
-//	Q_UNUSED(col);
-//	Q_UNUSED(_msg);
-//}
+void MainWindow::on_send_fin()
+{
+	if (m_rmq != nullptr)
+		m_rmq->setready();
+}
 
 void MainWindow::on_send_msg_cpack(st_m_cpack& _msg)
 {
@@ -116,8 +115,9 @@ void MainWindow::on_btn_start_clicked()
 		m_threads = new QThread(this);
 		connect(m_threads, &QThread::started, m_rmq, &CRmq::th_run);
 		connect(m_threads, &QThread::finished, m_rmq, &CRmq::deleteLater);
+		connect(m_rmq, &CRmq::send_fin, this, &MainWindow::on_send_fin);
 		connect(m_rmq, &CRmq::send_msg_cpack, this, &MainWindow::on_send_msg_cpack);
-		//connect(this, &MainWindow::wakeup, m_rmq, &CRmq::on_wakeup);
+		
 		if (!m_rmq->init(ui->edt_user->text(), ui->edt_psw->text(), ui->edt_ip->text(), ui->edt_port->text().toInt(), 123, "QRmqMsgShow", "", ui->edt_host->text()))
 		{
 			QMessageBox::critical(NULL, "错误", "Rabbitmq 连接错误");
@@ -143,29 +143,47 @@ void MainWindow::on_btn_start_clicked()
 		m_tmp_list.clear();
 		m_model_msg.removeRows(0, m_model_msg.rowCount());
 		m_model_data.removeRows(0, m_model_data.rowCount());
+		m_bindkey.clear();
 		ui->box_key->clear();
 	}
 }
 
 void MainWindow::on_btn_bind_clicked()
 {
-	if (ui->box_key->currentText().isEmpty())
+	if (m_rmq == nullptr)
 		return;
-	int idx = ui->box_key->findText(ui->box_key->currentText());
-	if (idx == -1)
+	if (ui->edt_bindkey->text().isEmpty() || ui->edt_bindkey->text() == "exchange key")
+		return;
+
+	QString key = ui->edt_bindkey->text().trimmed();
+	QString exchange = key.section(' ', 0, 0);
+	QString routekey = key.section(' ', -1, -1);
+	int idx_bindkey = m_bindkey.indexOf(key);
+	//新增
+	if (idx_bindkey < 0 && !exchange.isEmpty() && !routekey.isEmpty())
 	{
-		m_rmq->bindkey(ui->box_key->currentText(), ui->edt_exchange->text());
-		ui->box_key->addItem(ui->box_key->currentText());
-		m_bindkey << QString("%1|%2").arg(ui->edt_exchange->text()).arg(ui->box_key->currentText());
+		int idx = ui->box_key->findText(key);
+		if (idx < 0)
+		{
+			m_rmq->bindkey(routekey, exchange);
+			ui->box_key->addItem(key);
+			m_bindkey << key;
+			ui->box_key->setCurrentText("");
+		}
+	}
+
+	//删除
+	if (!ui->box_key->currentText().isEmpty())
+	{
+		key = ui->box_key->currentText();
+		exchange = key.section(' ', 0, 0);
+		routekey = key.section(' ', -1, -1);
+		m_rmq->unbindkey(routekey, exchange);
+		ui->box_key->removeItem(ui->box_key->currentIndex());
+		m_bindkey.removeAt(idx_bindkey);
 		ui->box_key->setCurrentText("");
 	}
-	else
-	{
-		m_rmq->unbindkey(ui->box_key->itemText(idx), ui->edt_exchange->text());
-		ui->box_key->removeItem(idx);
-		m_bindkey.removeAt(idx);
-		ui->box_key->setCurrentText("");
-	}
+
 	m_rmq_bindkey_status.setText(QString("绑定:%1").arg(m_bindkey.join(",")));
 }
 

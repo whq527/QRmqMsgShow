@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1054</width>
+    <width>1321</width>
     <height>612</height>
    </rect>
   </property>
@@ -41,7 +41,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1054</width>
+     <width>1321</width>
      <height>23</height>
     </rect>
    </property>
@@ -58,7 +58,7 @@
   <widget class="QDockWidget" name="dockWidget_1">
    <property name="minimumSize">
     <size>
-     <width>741</width>
+     <width>1033</width>
      <height>100</height>
     </size>
    </property>
@@ -137,20 +137,44 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="edt_exchange">
+         <widget class="QLineEdit" name="edt_bindkey">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>128</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;exchange key&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;exchange key&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
           <property name="text">
-           <string>test</string>
+           <string>exchange key</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="box_key">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="editable">
            <bool>true</bool>
           </property>

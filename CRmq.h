@@ -31,8 +31,10 @@ public:
 	void unbindkey(QString _key, QString _exchange);
 	void SetData(st_rmq_msg* _msg);
 	void wakeup();
+	//全部推送设置ready=false, 等fin 的emit的信号到主线程, 说明全部处理完毕, 再用主线程设置标识, 等计时器的timeout, 开始下一次更新
+	void setready() { m_ready = true; }
 signals:
-	//void send_msg_cell(int row, int col, st_m_cpack &);
+	void send_fin();
 	void send_msg_cpack(st_m_cpack&);
 public slots:
 	void th_run();
@@ -41,6 +43,7 @@ private:
 	bool m_stop = false;
 	ClibRmq* m_rmq = nullptr;
 	bool m_terminated = false;
+	bool m_ready = true;
 
 	QMutex m_mtx;
 	QWaitCondition m_wait;
