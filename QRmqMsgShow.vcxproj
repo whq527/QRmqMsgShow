@@ -387,6 +387,7 @@
     </QtMoc>
     <ClInclude Include="common.hpp" />
     <ClInclude Include="FunCpack.hpp" />
+    <ClInclude Include="FunStr.hpp" />
     <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>

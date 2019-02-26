@@ -69,40 +69,38 @@ void CRmq::unbindkey(QString _key, QString _exchange)
 
 void CRmq::SetData(st_rmq_msg * _msg)
 {
-	st_m_cpack one;
-	one.header.exchange = _msg->header.exchange;
-	one.header.routekey = _msg->header.routekey;
-	one.header.queue = _msg->header.queue;
-	one.header.timestamp = _msg->header.timestamp;
-	one.header.zlib = _msg->header.zlib;
-	one.header.src_size = _msg->header.src_size;
-	one.header.type = _msg->header.type;
-	one.header.id = _msg->header.id;
-	one.header.struct_name = _msg->header.struct_name;
-	one.update = true;
-	if (one.header.src_size == sizeof(ST_CPACK) || one.header.struct_name == "ST_CPACK")
+	st_rmq_msg_header header;
+	header.exchange = _msg->header.exchange;
+	header.routekey = _msg->header.routekey;
+	header.queue = _msg->header.queue;
+	header.timestamp = _msg->header.timestamp;
+	header.zlib = _msg->header.zlib;
+	header.src_size = _msg->header.src_size;
+	header.type = _msg->header.type;
+	header.id = _msg->header.id;
+	header.struct_name = _msg->header.struct_name;
+
+	if (header.src_size == sizeof(ST_CPACK) || header.struct_name == "ST_CPACK")
 	{
-		if (!_msg->header.zlib)
-		{
-			char m_recvbuf[10240] = { 0 };
-			memset(m_recvbuf, 0, sizeof(m_recvbuf));
-			unsigned long datalen = sizeof(m_recvbuf);
-			uncompress((unsigned char*)m_recvbuf, &datalen, (unsigned char*)_msg->content.bytes, (unsigned long)_msg->content.len);
-			if (datalen == sizeof(st_cpack))
-			{
-				memcpy_s(&one.pack, sizeof(ST_PACK), m_recvbuf, sizeof(ST_PACK));
-				QMutexLocker locker(&m_mtx);
-				m_recvdata_cpack.push_back(one);
-				m_wait.notify_all();
-			}
-		}
-		else
-		{
-			memcpy_s(&one.pack, sizeof(ST_PACK), _msg->content.bytes, sizeof(ST_PACK));
-			QMutexLocker locker(&m_mtx);
-			m_recvdata_cpack.push_back(one);
-			m_wait.notify_all();
-		}
+		st_m_cpack one;
+		one.header = header;
+		one.update = true;
+
+		memcpy_s(&one.pack, sizeof(ST_PACK), _msg->content.bytes, sizeof(ST_PACK));
+		QMutexLocker locker(&m_mtx);
+		m_recvdata_cpack.push_back(one);
+		m_wait.notify_all();
+	}
+	else if (header.struct_name == "string" || header.struct_name.empty())
+	{
+		st_m_str one;
+		one.header = header;
+		one.update = true;
+
+		one.pack = { (char*)_msg->content.bytes,_msg->content.len };
+		QMutexLocker locker(&m_mtx);
+		m_recvdata_str.push_back(one);
+		m_wait.notify_all();
 	}
 }
 
@@ -121,6 +119,25 @@ void CRmq::th_run()
 	while (m_stop != true)
 	{
 		bool found = false;
+		st_m_str one_str;
+		{
+			QMutexLocker locker(&m_mtx);
+			if (m_recvdata_str.size() > 0)
+			{
+				one_str.header = m_recvdata_str.front().header;
+				one_str.update = m_recvdata_str.front().update;
+				one_str.pack = m_recvdata_str.front().pack;
+				m_recvdata_str.pop_front();
+				found = true;
+			}
+		}
+		if (found)
+		{
+			QString key = QString("%1_%2").arg(QString::fromStdString(one_str.header.exchange)).arg(QString::fromStdString(one_str.header.routekey));
+			m_recvdata_str_map[key] = one_str;
+		}
+
+		found = false;
 		st_m_cpack one_cpack;
 		{
 			QMutexLocker locker(&m_mtx);
@@ -133,7 +150,6 @@ void CRmq::th_run()
 				found = true;
 			}
 		}
-
 		if (found)
 		{
 			QString key = QString("%1_%2").arg(QString::fromStdString(one_cpack.header.exchange)).arg(QString::fromStdString(one_cpack.header.routekey));
@@ -142,6 +158,14 @@ void CRmq::th_run()
 
 		if (m_ready)
 		{
+			for (auto var = m_recvdata_str_map.begin(); var != m_recvdata_str_map.end(); var++)
+			{
+				if (var->update)
+				{
+					emit send_msg_str(*var);
+					var->update = false;
+				}
+			}
 			for (auto var = m_recvdata_cpack_map.begin(); var != m_recvdata_cpack_map.end(); var++)
 			{
 				if (var->update)
@@ -153,13 +177,13 @@ void CRmq::th_run()
 			m_ready = false;
 			emit send_fin();
 		}
+
 		if (!found)
 		{
 			QMutexLocker locker(&m_mtx);
 			m_wait.wait(&m_mtx);
 		}
 	}
-	
 }
 
 void CRmq::wakeup()

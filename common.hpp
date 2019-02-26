@@ -23,12 +23,12 @@ QString setItemValue(QString _entry, const char* _str)
 
 QStandardItem* newItemValue(QString _entry, std::string _str)
 {
-	return new QStandardItem(QString("%1=%2").arg(_entry).arg(QString::fromStdString(_str)));
+	return new QStandardItem(QString("%1=%2").arg(_entry).arg(QString::fromLocal8Bit(_str.c_str())));
 }
 
 QString setItemValue(QString _entry, std::string _str)
 {
-	return QString("%1=%2").arg(_entry).arg(QString::fromStdString(_str));
+	return QString("%1=%2").arg(_entry).arg(QString::fromLocal8Bit(_str.c_str()));
 }
 
 QStandardItem* newItemValue(QString _entry, int _num)

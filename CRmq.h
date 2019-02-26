@@ -12,6 +12,13 @@
 #include "ClibRmq.h"
 #include "cpack.h"
 
+struct st_m_str
+{
+	st_rmq_msg_header header;
+	std::string pack = "";
+	bool update = false;
+};
+
 struct st_m_cpack
 {
 	st_rmq_msg_header header;
@@ -31,11 +38,13 @@ public:
 	void unbindkey(QString _key, QString _exchange);
 	void SetData(st_rmq_msg* _msg);
 	void wakeup();
-	//å…¨éƒ¨æ¨é€è®¾ç½®ready=false, ç­‰fin çš„emitçš„ä¿¡å·åˆ°ä¸»çº¿ç¨‹, è¯´æ˜å…¨éƒ¨å¤„ç†å®Œæ¯•, å†ç”¨ä¸»çº¿ç¨‹è®¾ç½®æ ‡è¯†, ç­‰è®¡æ—¶å™¨çš„timeout, å¼€å§‹ä¸‹ä¸€æ¬¡æ›´æ–°
+	//È«²¿ÍÆËÍÉèÖÃready=false, µÈfin µÄemitµÄĞÅºÅµ½Ö÷Ïß³Ì, ËµÃ÷È«²¿´¦ÀíÍê±Ï, ÔÙÓÃÖ÷Ïß³ÌÉèÖÃ±êÊ¶, µÈ¼ÆÊ±Æ÷µÄtimeout, ¿ªÊ¼ÏÂÒ»´Î¸üĞÂ
 	void setready() { m_ready = true; }
 signals:
 	void send_fin();
+	void send_msg_str(st_m_str&);
 	void send_msg_cpack(st_m_cpack&);
+
 public slots:
 	void th_run();
 
@@ -47,6 +56,10 @@ private:
 
 	QMutex m_mtx;
 	QWaitCondition m_wait;
+
+	QList<st_m_str> m_recvdata_str;
+	QMap<QString, st_m_str> m_recvdata_str_map;
+
 	QList<st_m_cpack> m_recvdata_cpack;
 	QMap<QString, st_m_cpack> m_recvdata_cpack_map;
 };
